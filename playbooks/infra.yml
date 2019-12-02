@@ -1,5 +1,5 @@
 ---
-- name: This playbook is dedicated to taking backup related to Infra servers
+- name: This playbook is dedicated to taking backup related to Infra server
   hosts: infra
   gather_facts: False
   tasks:
