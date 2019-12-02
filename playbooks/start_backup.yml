@@ -1,0 +1,42 @@
+---
+#Variable definition
+#All variables details are called from host vars file dedicated to each remote server
+#{{item}} -> with_items [called from host_vars which is the folder location in the remote server to take backup]
+#{{name}} -> Name of group to display in the log [called from user.yml]
+#{{csv}} -> CSV file location [called from user.yml]
+#{{html}} -> Html file location [called from user.yml]
+#{{server_ip}} -> Server IP address of source VM to be backed up (Remote Hosts)
+#{{place}} -> Destination child folder to copy files in the backup folder [Parent folder is set to /home/sonic/wordpress]
+
+     - name: This playbook is dedicated to taking backup related to Sonic Project and its called from respective user.yml
+       block:
+        - name: Copying files from source server to destination
+          synchronize:
+             src: "{{item}}"
+             dest: "/home/sonic/wordpress/{{place}}"
+             mode: pull
+          delegate_to: "{{groups['bk_main_server'][0]}}" 
+
+        - name: Executing Python script to store the status in CSV file
+          shell:
+            cmd: python ../scripts/create_csv.py "{{item}}" "Success" "{{server_ip}}" "{{csv}}"
+          delegate_to: 127.0.0.1 #Then only command will be executed in the local machine. If not in the remote machine
+        - debug: 
+             msg: Backup taken successfully
+
+       rescue:
+        - name: Executing Python script to store the status in CSV file
+          shell:
+            cmd: python ../scripts/create_csv.py "{{item}}" "Failed" "{{server_ip}}" "{{csv}}"
+          delegate_to: 127.0.0.1
+        - debug: 
+             msg: Backup Failed
+
+       always:
+        - name: Executing Python script to create html file
+          shell:
+            cmd: python ../scripts/create_html.py "{{name}}" "{{csv}}" "{{html}}"
+          delegate_to: 127.0.0.1
+          become: yes #Root privilege is required to copy the html file to /var/www/html
+        - debug:
+           msg: HTML file created

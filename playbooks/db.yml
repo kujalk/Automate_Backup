@@ -1,0 +1,9 @@
+---
+- name: This playbook is dedicated to taking backup related to DB servers
+  hosts: db
+  gather_facts: False
+  tasks:
+        - name: Executing tasks via external yml
+          include_tasks: start_backup.yml
+          with_items:
+            - "{{ folders }}" #Obtained from the host_vars

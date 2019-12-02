@@ -1,0 +1,10 @@
+[infra]
+remote_host1
+
+[db]
+remote_host2
+remote_host3
+
+[bk_main_server]
+193.168.3.192 ansible_ssh_user=sonic
+

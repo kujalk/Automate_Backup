@@ -1,0 +1,9 @@
+---
+- name: This playbook is dedicated to taking backup related to Infra servers
+  hosts: infra
+  gather_facts: False
+  tasks:
+        - name: Executing tasks via external yml
+          include_tasks: start_backup.yml
+          with_items:
+            - "{{ folders }}" #Obtained from the group_vars

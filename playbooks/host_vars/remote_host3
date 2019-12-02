@@ -1,0 +1,10 @@
+#This host vars is dedicated to DB Remote_Host3
+ansible_ssh_user: ansible
+name: "Database"
+csv: "../csv/db.csv"
+html: "/var/www/html/DB.html"
+server_ip: "193.168.3.223"
+place: "DB2"
+folders: 
+   - /home/ansible/db3
+
